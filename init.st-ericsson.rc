@@ -30,8 +30,12 @@ on early-boot
     # and property service is initialized
     exec /sbin/fota-ua c
 
+    stop tad    
+
     # Start the offline charging (This blocks booting further in some cases)
-    exec /system/bin/chargemon
+    exec /sbin/bootrec    
+    
+    start tad
 
     # Make sure the crashsms/crashes are writable by crashmonitor
     
@@ -139,7 +143,7 @@ on fs
 
     # Mount system partition, resize fs
     exec /sbin/resize2fs /dev/block/mmcblk0p10
-    mount ext4 /dev/block/mmcblk0p10 /system ro
+    mount ext4 /dev/block/mmcblk0p10 /system rw
 
     mount ext4 /dev/block/mmcblk0p6 /modemfs nosuid nodev noatime
 
@@ -545,7 +549,7 @@ service p2p_supplicant /system/bin/wpa_supplicant -Dnl80211 -iwlan0 -c/data/misc
     oneshot
 
 # STE
-service softap /system/bin/wpa_supplicant -Dnl80211 -iwlan1 -c/data/misc/wifi/ap_supplicant.conf
+service softap /system/bin/wpa_supplicant -Dnl80211 -iwlan1 -c/data/misc/wifi/wpa_supplicant.conf
     socket wpa_wlan0 dgram 660 wifi wifi
     group wifi
     disabled
@@ -758,3 +762,10 @@ on init
 
 service illumination /system/bin/illumination_service
     user root
+
+service touchd /system/bin/touchd
+    user root
+
+service semcwall /system/bin/semcwall
+    user root
+

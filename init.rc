@@ -90,11 +90,11 @@ loglevel 3
     write /dev/cpuctl/bg_non_interactive/cpu.shares 52
 
 on early-fs
-    mount rootfs rootfs / ro remount
+    mount rootfs rootfs / rw remount
 
 on post-fs
     # once everything is setup, no need to modify /
-    mount rootfs rootfs / ro remount
+    mount rootfs rootfs / rw remount
 
     # We chown/chmod /data again so because mount is run as root + defaults
     chown system system /data
@@ -333,7 +333,7 @@ service ril-daemon /system/bin/rild
     group radio cache inet misc audio sdcard_rw net_raw dbus_access
 
 service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
-    socket zygote stream 660 root system
+    socket zygote stream 666
     onrestart write /proc/sysrq-trigger c
 
 service drm /system/bin/drmserver
